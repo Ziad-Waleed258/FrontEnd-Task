@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <!-- Toastr for notifications -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
+    <!-- DataTables CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.css"
+    />
+    <link rel="stylesheet" href="CSS/style.css" />
+  </head>
+  <body>
+    <div class="loader" id="loader"></div>
+
+    <div class="container animate__animated animate__fadeIn">
+      <header>
+        <h1>Dashboard</h1>
+        <button id="modeToggleBtn" class="mode-toggle-btn">
+          <i class="fas fa-moon"></i> Dark Mode
+        </button>
+      </header>
+
+      <!-- Navigation Buttons -->
+      <nav class="nav-buttons">
+        <button class="btn nav-btn active" data-target="dashboard-section">
+          <i class="fas fa-chart-line"></i> Dashboard
+        </button>
+        <button class="btn nav-btn" data-target="users-section">
+          <i class="fas fa-users"></i> Users
+        </button>
+        <button class="btn nav-btn" data-target="posts-section">
+          <i class="fas fa-newspaper"></i> Posts
+        </button>
+      </nav>
+
+      <!-- Dashboard Section -->
+      <div
+        id="dashboard-section"
+        class="content-section active animate__animated animate__fadeIn"
+      >
+        <div class="dashboard-stats">
+          <div class="stat-card animate__animated animate__fadeInUp">
+            <h3>Users</h3>
+            <div class="value" id="usersCount">...</div>
+          </div>
+          <div
+            class="stat-card animate__animated animate__fadeInUp animate__delay-1s"
+          >
+            <h3>Posts</h3>
+            <div class="value" id="postsCount">...</div>
+          </div>
+          <div
+            class="stat-card animate__animated animate__fadeInUp animate__delay-2s"
+          >
+            <h3>Comments</h3>
+            <div class="value" id="commentsCount">...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Table Section -->
+      <div
+        id="users-section"
+        class="content-section animate__animated animate__fadeIn"
+      >
+        <div class="section-header">
+          <h2>Users Table</h2>
+          <button id="addUserBtn" class="btn">
+            <i class="fas fa-plus"></i> Add User
+          </button>
+        </div>
+        <table id="usersTable" class="display" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Website</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data will be loaded here by DataTables -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Posts Section -->
+      <div
+        id="posts-section"
+        class="content-section animate__animated animate__fadeIn"
+      >
+        <div class="section-header">
+          <h2>Posts</h2>
+          <button id="addPostBtn" class="btn">
+            <i class="fas fa-plus"></i> Add Post
+          </button>
+        </div>
+        <input
+          type="text"
+          id="postSearch"
+          class="search-input"
+          placeholder="Live search for posts..."
+        />
+        <div id="postsList" class="posts-list">
+          <!-- Posts will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div id="userModal" class="modal">
+      <div class="modal-content animate__animated animate__zoomIn">
+        <span class="close-btn">&times;</span>
+        <h2 id="userModalTitle">Add New User</h2>
+        <form id="userForm">
+          <input type="hidden" id="userId" />
+          <div class="form-group">
+            <label for="userName">Name:</label>
+            <input type="text" id="userName" required />
+          </div>
+          <div class="form-group">
+            <label for="userUsername">Username:</label>
+            <input type="text" id="userUsername" required />
+          </div>
+          <div class="form-group">
+            <label for="userEmail">Email:</label>
+            <input type="email" id="userEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="userWebsite">Website:</label>
+            <input type="text" id="userWebsite" />
+          </div>
+          <button type="submit" class="btn" id="saveUserBtn">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add/Edit Post Modal -->
+    <div id="postModal" class="modal">
+      <div class="modal-content animate__animated animate__zoomIn">
+        <span class="close-btn">&times;</span>
+        <h2 id="postModalTitle">Add New Post</h2>
+        <form id="postForm">
+          <input type="hidden" id="postId" />
+          <div class="form-group">
+            <label for="postTitle">Title:</label>
+            <input type="text" id="postTitle" required />
+          </div>
+          <div class="form-group">
+            <label for="postBody">Content:</label>
+            <textarea id="postBody" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn" id="savePostBtn">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Comments Modal -->
+    <div id="commentsModal" class="modal">
+      <div class="modal-content animate__animated animate__zoomIn">
+        <span class="close-btn">&times;</span>
+        <h2>Comments</h2>
+        <div id="commentsList">
+          <!-- Comments will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Confirmation Modal (Replaces JS confirm) -->
+    <div id="confirmationModal" class="modal">
+      <div class="modal-content animate__animated animate__zoomIn">
+        <span class="close-btn">&times;</span>
+        <h2 id="confirmationMessage"></h2>
+        <div class="modal-buttons">
+          <button class="btn btn-secondary" id="confirmCancelBtn">No</button>
+          <button class="btn" id="confirmDeleteBtn">Yes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script
+      type="text/javascript"
+      src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"
+    ></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="JS/main.js"></script>
+  </body>
+</html>
